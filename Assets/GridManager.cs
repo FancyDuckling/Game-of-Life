@@ -13,7 +13,7 @@ public class GridManager : MonoBehaviour
     private int spawnPrecentage = 20;
     private int width = 53;
     private int height = 30;
-    private Cell[,] currentGrid;
+    private Cell[,] grid;
     
 
     void Start()
@@ -24,7 +24,7 @@ public class GridManager : MonoBehaviour
 
     public void GenerateGrids()
     {
-        currentGrid = new Cell[width, height];
+        grid = new Cell[width, height];
 
 
         for (int x = 0; x < width; x++)
@@ -33,7 +33,7 @@ public class GridManager : MonoBehaviour
             {
                 var spawnedCell = Instantiate(cellPrefab, new Vector3(x, y), Quaternion.identity);
                 spawnedCell.name = $"Tile {x}, {y}";
-                currentGrid[x, y] = spawnedCell;
+                grid[x, y] = spawnedCell;
 
                 float randomValue = Random.Range(0f, 100f);
 
@@ -53,7 +53,7 @@ public class GridManager : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                currentGrid[x, y].ApplyNextGenerationState();
+                grid[x, y].ApplyNextGenerationState();
             }
         }
 
@@ -62,7 +62,7 @@ public class GridManager : MonoBehaviour
         {
             for (int y = 0; y < height; y++)
             {
-                Cell currentCell = currentGrid[x, y];
+                Cell currentCell = grid[x, y];
                 currentCell.SetNextGenerationState(false);
 
                 int aliveNeighbors = CountAliveNeighbors(x, y);
@@ -104,7 +104,7 @@ public class GridManager : MonoBehaviour
 
                 if (neighborX >= 0 && neighborX < width && neighborY >= 0 && neighborY < height)
                 {
-                    if (currentGrid[neighborX, neighborY].IsAlive())
+                    if (grid[neighborX, neighborY].IsAlive())
                     {
                         count++;
                     }
