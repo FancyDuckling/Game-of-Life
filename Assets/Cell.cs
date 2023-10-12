@@ -2,18 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+//Ändrat 12/10-2023
 public class Cell : MonoBehaviour
 {
     public Color deadColor;
     public Color aliveColor;
     public SpriteRenderer spriteRenderer;
-    private bool isAliveInNextGeneration;
-    private bool isAlive;
+    public bool isAliveInNextGeneration;
+    public bool isAlive;
 
     public void Init(bool isAlive)
     {
         this.isAlive = isAlive;
-    
+        this.isAliveInNextGeneration = isAlive;
+
         if (isAlive == true)
         {
             spriteRenderer.color = aliveColor;
@@ -38,7 +41,7 @@ public class Cell : MonoBehaviour
     {
         isAlive = isAliveInNextGeneration;
 
-        if (isAlive == true)
+        if (isAlive)
         {
             spriteRenderer.color = aliveColor;
         }

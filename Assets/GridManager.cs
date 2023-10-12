@@ -3,18 +3,18 @@ using System.Collections.Generic;
 using UnityEngine;
 
 
-
+//Ändrat 12/10-2023
 public class GridManager : MonoBehaviour
 {
     public Cell cellPrefab;
     public Transform cameraPos;
 
     private float generationInterval = 0.5f;
-    private int spawnPrecentage = 15;
+    private int spawnPrecentage = 20;
     private int width = 53;
     private int height = 30;
     private Cell[,] currentGrid;
-    private Cell[,] nextGrid;
+    
 
     void Start()
     {
@@ -25,7 +25,7 @@ public class GridManager : MonoBehaviour
     public void GenerateGrids()
     {
         currentGrid = new Cell[width, height];
-        nextGrid = new Cell[width, height];
+
 
         for (int x = 0; x < width; x++)
         {
@@ -34,10 +34,10 @@ public class GridManager : MonoBehaviour
                 var spawnedCell = Instantiate(cellPrefab, new Vector3(x, y), Quaternion.identity);
                 spawnedCell.name = $"Tile {x}, {y}";
                 currentGrid[x, y] = spawnedCell;
-  
+
                 float randomValue = Random.Range(0f, 100f);
 
-                bool isAlive = randomValue < spawnPrecentage; 
+                bool isAlive = randomValue < spawnPrecentage;
 
                 spawnedCell.Init(isAlive);
             }
@@ -48,42 +48,7 @@ public class GridManager : MonoBehaviour
 
     void NextGeneration()
     {
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                Cell cell = currentGrid[x, y];
-                Cell currentCell = cell;
-                int aliveNeighbors = CountAliveNeighbors(x, y);
 
-                bool isAliveInNextGeneration = false;
-
-                if (currentCell.IsAlive())
-                {
-                    if (aliveNeighbors == 2 || aliveNeighbors == 3)
-                    {
-                        isAliveInNextGeneration = true;
-                    }
-                }
-                else
-                {
-                    if (aliveNeighbors == 3)
-                    {
-                        isAliveInNextGeneration = true;
-                    }
-                }
-
-                nextGrid[x, y] = currentCell;
-                nextGrid[x, y].SetNextGenerationState(isAliveInNextGeneration);
-            }
-        }
-
-        //next generation
-        Cell[,] tempGrid = currentGrid;
-        currentGrid = nextGrid;
-        nextGrid = tempGrid;
-
-        //new generation's state
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -91,6 +56,34 @@ public class GridManager : MonoBehaviour
                 currentGrid[x, y].ApplyNextGenerationState();
             }
         }
+
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                Cell currentCell = currentGrid[x, y];
+                currentCell.SetNextGenerationState(false);
+
+                int aliveNeighbors = CountAliveNeighbors(x, y);
+
+                if (currentCell.IsAlive())
+                {
+                    if (aliveNeighbors == 2 || aliveNeighbors == 3)
+                    {
+                        currentCell.SetNextGenerationState(true);
+                    }
+                }
+                else
+                {
+                    if (aliveNeighbors == 3)
+                    {
+                        currentCell.SetNextGenerationState(true);
+                    }
+                }
+            }
+        }
+
     }
 
     int CountAliveNeighbors(int x, int y)
@@ -103,7 +96,7 @@ public class GridManager : MonoBehaviour
             {
                 if (deltaX == 0 && deltaY == 0)
                 {
-                    continue; 
+                    continue;
                 }
 
                 int neighborX = x + deltaX;
@@ -124,7 +117,7 @@ public class GridManager : MonoBehaviour
 
     public void PauseGame()
     {
-        Time.timeScale = 0; 
+        Time.timeScale = 0;
     }
 
     public void PlayGame()
@@ -134,12 +127,12 @@ public class GridManager : MonoBehaviour
 
     public void FasterGame()
     {
-       Time.timeScale = 1 * 2;
+        Time.timeScale = 1 * 2;
     }
 
     public void ZoomIn()
     {
-        Camera.main.orthographicSize = 15-7.5f;
+        Camera.main.orthographicSize = 15 - 7.5f;
     }
 
     public void ZoomOut()
